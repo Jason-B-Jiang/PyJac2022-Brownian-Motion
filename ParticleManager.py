@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from tkinter.tix import MAX
 import numpy as np
 import random
 from Particle import Particle
@@ -20,6 +21,9 @@ MAX_POS = 525 - 25
 
 # default color of blue for particles
 COLOR = (0, 0, 255)
+
+# Maximum number of particles to simulate
+MAX_PARTICLES = 30
 
 ################################################################################
 
@@ -60,10 +64,38 @@ class ParticleManager:
         """
         particle_tuples = []
         for p in self.particles:
-            new_col = (np.clip(20 * np.linalg.norm(p.vel), 0, 255), 0, 255)
+            new_col = (np.clip(30 * np.linalg.norm(p.vel), 0, 255), 0, 255)
             new_pos = p.get_position()
             r = p.r
 
             particle_tuples.append((new_col, new_pos, r))
 
         return particle_tuples
+    
+    def remove_particle(self) -> None:
+        """Remove a particle from self.particles, and do nothing if
+        self.particles is already empty.
+        """
+        if len(self.particles) > 0:
+            self.particles.pop()
+
+    def add_particle(self, speed: int, radius: int,
+                     mass: int) -> None:
+        """Adds a new particle for simulation, with speed, radius and mass
+        determining the magnitude of each of these properties for the new
+        particle.
+        
+        Preconditions: speed, radius and mass are all between 1 to 5, inclusive.
+        """
+        if len(self.particles) == MAX_PARTICLES:
+            return  # don't allow number of simulated particles to exceed max
+
+        new_vel = np.array([MIN_SPEED + 2 * speed, MIN_SPEED + 2 * speed])
+        new_pos = np.random.uniform(low=MIN_POS, high=MAX_POS,
+                                     size=(2,))
+        new_radius = MIN_RADIUS + 2 * radius
+        new_mass = MIN_MASS + 2 * mass
+
+        p = Particle(new_vel, new_pos, new_radius, new_mass, COLOR)
+
+        self.particles.append(p)
