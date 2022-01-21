@@ -54,7 +54,7 @@ def simulate_n_particles(n: int) -> list:
     """
     particles = []
     for i in range(n):
-        rand_vel = np.random.uniform(low = 5, high = 5, size = (2,))
+        rand_vel = np.random.uniform(low = 1, high = 10, size = (2,))
         rand_pos = np.random.uniform(low = 75 + 25, high = 525 - 25, size = (2,))
         particles.append(Particle(rand_vel, rand_pos))
 
@@ -68,7 +68,8 @@ def draw_particles(particles) -> None:
         p.update_position([par for par in particles if par != p])
 
     # draw new particle positions on screen based on their new velocities
-    [pygame.draw.circle(WINDOW, (0, 0, 255), p.get_position(), p.r) for p in particles]    
+    [pygame.draw.circle(WINDOW, (np.clip(20 * np.linalg.norm(p.vel), 0, 255), 0, 255),
+                        p.get_position(), p.r) for p in particles]
 
 def main():
     run = True
