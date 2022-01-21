@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pygame
-import numpy as np
-from typing import List
-from Particle import Particle
+import random
+from ParticleManager import ParticleManager
 pygame.init()
 
 ################################################################################
@@ -11,7 +10,7 @@ pygame.init()
 # Define constants
 
 # Define game window
-WIDTH = 600
+WIDTH = 800
 HEIGHT = 600
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))  # set main window
 pygame.display.set_caption("Many body interactions!")  # set window name
@@ -27,64 +26,51 @@ CONTAINER_BORDERS = {
 }
 
 # Simulation constants
-NUM_PARTICLES = 25
+MAX_PARTICLES = 30
 FPS = 60
 
 ################################################################################
 
 # Functions
-def draw_window(particles):
+def draw_window(manager: ParticleManager):
     # create white background
     WINDOW.fill((255, 255, 255))
 
     # create particle container
     pygame.draw.rect(WINDOW,
                     (0, 0, 0),
-                     pygame.Rect((0.25 * WIDTH) // 2,
-                                 (0.25 * HEIGHT) // 2, 0.75 * WIDTH, 0.75 * HEIGHT),
+                    (75, 75, 450, 450),
                      2)
 
-    draw_particles(particles)  # update all onscreen particles
-    pygame.display.update()  # refresh the display
+    # update particle velocities and positions
+    manager.update_particles()
 
+    # update positions and colors of all onscreen particles
+    new_particle_info = manager.get_updated_particle_info()
+    [pygame.draw.circle(WINDOW, p[0], p[1], p[2]) for p in new_particle_info]
 
-def simulate_n_particles(n: int) -> list:
-    """Simulate n particles of uniform size and mass, with random initial
-    velocities and starting positions.
-    """
-    particles = []
-    for i in range(n):
-        rand_vel = np.random.uniform(low = 1, high = 10, size = (2,))
-        rand_pos = np.random.uniform(low = 75 + 25, high = 525 - 25, size = (2,))
-        particles.append(Particle(rand_vel, rand_pos))
+    # refresh the display
+    pygame.display.update()
 
-    return particles
-
-
-def draw_particles(particles) -> None:
-    # update all particle velocities and positions, based on collisions with
-    # walls and othr particles
-    for p in particles:
-        p.update_position([par for par in particles if par != p])
-
-    # draw new particle positions on screen based on their new velocities
-    [pygame.draw.circle(WINDOW, (np.clip(20 * np.linalg.norm(p.vel), 0, 255), 0, 255),
-                        p.get_position(), p.r) for p in particles]
 
 def main():
     run = True
     clock = pygame.time.Clock()
+    manager = ParticleManager()
 
-    particles = simulate_n_particles(NUM_PARTICLES)
+    # Initially have n random particles simulated on the screen, from 1 to
+    # MAX_PARTICLES
+    manager.simulate_n_particles(random.randint(1, MAX_PARTICLES))
     
     while run:
         clock.tick(FPS)  # run while loop 60x per second consistently
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                run = False
                 pygame.quit()
 
-        draw_window(particles)
+        draw_window(manager)
 
     main()  # recursively re-run the game loop
 

@@ -4,17 +4,16 @@ from __future__ import annotations
 import numpy as np
 from typing import Tuple, List
 
-MASS = 1
-RADIUS = 15
-MIN_DIST = RADIUS // 2  # minimul allowed pixels between particles, and between
-                        # particles and container edges
-COLOR = (0, 0, 255)  # default color of blue for particles
-X_LIMITS = [75, 525]
-Y_LIMITS = [75, 525]
+X_LIMITS = (75, 525)
+Y_LIMITS = (75, 525)
+
+# minimum allowed pixels between particles, and between particles and container
+# edges
+MIN_DIST = 2
 
 class Particle:
-    def __init__(self, vel: np.array, position: np.array, r: int = RADIUS,
-                 mass: int = MASS, color: Tuple[int] = COLOR):
+    def __init__(self, vel: np.array, position: np.array, r: int, mass: int,
+                 color: Tuple[int]):
         self.vel = vel
         self.pos = position  # centre of the particle
         self.r = r  # radius around the centre
@@ -22,12 +21,14 @@ class Particle:
         self.color = color
 
         # keep track of particles this particle has already had collisions
-        # accounted for with
-        # this is a temporary hacky workaround until I find something better
+        # accounted for with in this frame
+        # ensures that each interparticle collision is only simulated once
+        # per frame
         self._collided_with = []
 
     def update_position(self, other_particles: List[Particle]) -> None:
-        # reset list of particles this particle has collided with
+        # reset list of particles this particle has collided with, as we are
+        # in a new frame
         self._collided_with = []
 
         # check for collision with other particles and update velocity
@@ -59,7 +60,7 @@ class Particle:
         """Checks if the particle has collided with any of the container walls,
         and adjusts the particle's velocity to collide elastically if so.
 
-        A collision counts as the particle being within 5 pixels of a wall,
+        A collision counts as the particle being within 2 pixels of a wall,
         including the radius of the particle.
         """
         # check for collision with left/right container borders
@@ -149,7 +150,7 @@ class Particle:
         if dx_left_future <= 0 or dx_right_future <= 0:
             # particle's velocity is perpendicular to left/right border, so
             # reverse its velocity
-            print('predicted collided with side')
+            print('predicted collision with side')
             if np.dot(self.vel, np.array([0, 1])) == 0:
                 self.vel = -self.vel
                 print('predicted head-on collision with side')
@@ -160,7 +161,7 @@ class Particle:
 
         elif dy_top_future <= 0 or dy_bottom_future <= 0:
             # particle velocity perpendicular to top/bottom border
-            print('predicted collided with top/bottom')
+            print('predicted collision with top/bottom')
             if np.dot(self.vel, np.array([1, 0])) == 0:
                 self.vel = -self.vel
                 print('predicted head-on collision with top/bottom')
