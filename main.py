@@ -26,10 +26,8 @@ CONTAINER_BORDERS = {
     'DOWN': HEIGHT - ((0.25 * HEIGHT) // 2)
 }
 
-# Particle constants
-PARTICLE_RADIUS = 10
-NUM_PARTICLES = 10
-
+# Simulation constants
+NUM_PARTICLES = 25
 FPS = 60
 
 ################################################################################
@@ -56,18 +54,21 @@ def simulate_n_particles(n: int) -> list:
     """
     particles = []
     for i in range(n):
-        rand_vel = np.random.uniform(low = 2, high = 2, size = (2,))
-        rand_pos = np.random.uniform(low = 75 + 20, high = 525 - 20, size = (2,))
+        rand_vel = np.random.uniform(low = 5, high = 5, size = (2,))
+        rand_pos = np.random.uniform(low = 75 + 25, high = 525 - 25, size = (2,))
         particles.append(Particle(rand_vel, rand_pos))
 
     return particles
 
 
 def draw_particles(particles) -> None:
-    # update all particle velocities and positions
+    # update all particle velocities and positions, based on collisions with
+    # walls and othr particles
     for p in particles:
-        p.update_position()
-        pygame.draw.circle(WINDOW, (0, 0, 255), p.get_position(), PARTICLE_RADIUS)
+        p.update_position([par for par in particles if par != p])
+
+    # draw new particle positions on screen based on their new velocities
+    [pygame.draw.circle(WINDOW, (0, 0, 255), p.get_position(), p.r) for p in particles]    
 
 def main():
     run = True
