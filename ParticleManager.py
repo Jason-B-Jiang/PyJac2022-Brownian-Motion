@@ -39,7 +39,7 @@ class ParticleManager:
         mass, storing the particles in self.particles.
         """
         for _ in range(n):
-            rand_vel = np.random.uniform(low = MIN_SPEED, high = MAX_SPEED,
+            rand_vel = np.random.uniform(low = -MAX_SPEED, high = MAX_SPEED,
                                          size = (2,))
             rand_pos = np.random.uniform(low = MIN_POS, high = MAX_POS,
                                          size = (2,))
@@ -57,6 +57,16 @@ class ParticleManager:
         """
         for p in self.particles:
             p.update_position([par for par in self.particles if par != p])
+
+    def clear(self) -> None:
+        """Removes all particles stored in the ParticleManager.
+        """
+        self.particles = []
+
+    def get_num_particles(self) -> int:
+        """Returns number of particles stored by ParticleManager.
+        """
+        return len(self.particles)
 
     def get_updated_particle_info(self) -> List[Tuple]:
         """Return a list of tuples, where each tuple contains the new color
@@ -90,11 +100,12 @@ class ParticleManager:
         if len(self.particles) == MAX_PARTICLES:
             return  # don't allow number of simulated particles to exceed max
 
-        new_vel = np.array([MIN_SPEED + 2 * speed, MIN_SPEED + 2 * speed])
+        new_vel = np.array([MIN_SPEED + 2 * (speed - 1),
+                            MIN_SPEED + 2 * (speed - 1)])
         new_pos = np.random.uniform(low=MIN_POS, high=MAX_POS,
                                      size=(2,))
-        new_radius = MIN_RADIUS + 2 * radius
-        new_mass = MIN_MASS + 2 * mass
+        new_radius = MIN_RADIUS + 2 * (radius - 1)
+        new_mass = MIN_MASS + 2 * (mass - 1)
 
         p = Particle(new_vel, new_pos, new_radius, new_mass, COLOR)
 

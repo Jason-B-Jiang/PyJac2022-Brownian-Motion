@@ -75,10 +75,8 @@ class Particle:
         if dx_left <=0 or dx_right <= 0:
             # particle's velocity is perpendicular to left/right border, so
             # reverse its velocity
-            print('collided with side')
             if np.dot(self.vel, np.array([0, 1])) == 0:
                 self.vel = -self.vel
-                print('head-on collision with side')
             else:
                 # otherwise, flip velocity vector and negate new y velocity,
                 # to bounce off right angle from wall
@@ -86,10 +84,8 @@ class Particle:
         
         elif dy_top <= 0 or dy_bottom <= 0:
             # particle velocity perpendicular to top/bottom border
-            print('collided with top/bottom')
             if np.dot(self.vel, np.array([1, 0])) == 0:
                 self.vel = -self.vel
-                print('head-on collision with top/bottom')
             else:
                 self.vel = np.array([self.vel[1], -self.vel[0]])
 
@@ -112,7 +108,6 @@ class Particle:
                 # already collided in a previous frame
                 moving_toward = np.dot(p.pos - self.pos, self.vel - p.vel) > 0
                 if moving_toward:
-                    print('particle collision occurred')
                     self._collide_particles(p)
                     self._collided_with.append(p)
     
@@ -150,10 +145,8 @@ class Particle:
         if dx_left_future <= 0 or dx_right_future <= 0:
             # particle's velocity is perpendicular to left/right border, so
             # reverse its velocity
-            print('predicted collision with side')
             if np.dot(self.vel, np.array([0, 1])) == 0:
                 self.vel = -self.vel
-                print('predicted head-on collision with side')
             else:
                 # otherwise, flip velocity vector and negate new y velocity,
                 # to bounce off right angle from wall
@@ -161,9 +154,7 @@ class Particle:
 
         elif dy_top_future <= 0 or dy_bottom_future <= 0:
             # particle velocity perpendicular to top/bottom border
-            print('predicted collision with top/bottom')
             if np.dot(self.vel, np.array([1, 0])) == 0:
                 self.vel = -self.vel
-                print('predicted head-on collision with top/bottom')
             else:
                 self.vel = np.array([self.vel[1], -self.vel[0]])
