@@ -99,8 +99,8 @@ class ParticleManager:
         if len(self.particles) == MAX_PARTICLES:
             return  # don't allow number of simulated particles to exceed max
 
-        new_vel = np.array([MIN_SPEED + 2 * (speed - 1),
-                            MIN_SPEED + 2 * (speed - 1)])
+        new_vel = np.array([random.choice([1, -1]) * MIN_SPEED + 2 * (speed - 1),
+                            random.choice([1, -1]) * MIN_SPEED + 2 * (speed - 1)])
         new_pos = np.random.uniform(low=MIN_POS, high=MAX_POS,
                                      size=(2,))
         new_radius = MIN_RADIUS + 2 * (radius - 1)
