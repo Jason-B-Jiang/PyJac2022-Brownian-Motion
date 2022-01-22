@@ -4,10 +4,7 @@
 # Credit to https://www.youtube.com/watch?v=4_9twnEduFA for inspiration in
 # making these button classes
 import pygame
-from typing import Tuple, Dict
-from ParticleManager import ParticleManager
-pygame.init()
-
+from typing import Tuple
 
 class Button:
     def __init__(self, x, y, width, height, text='', action = '', color=(0, 255, 0),

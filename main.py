@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from cgitb import reset
 import pygame
 import random
 from ParticleManager import ParticleManager
 from Button import *
-from typing import Dict, List, Callable
+from typing import Dict, List
 pygame.init()
 
 ################################################################################
@@ -13,7 +12,7 @@ pygame.init()
 # Define constants
 
 # Define game window
-WIDTH = 900
+WIDTH = 925
 HEIGHT = 600
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))  # set main window
 pygame.display.set_caption("Many body interactions!")  # set window name
@@ -88,7 +87,7 @@ def make_and_get_buttons() -> List[Button]:
     """Initialize buttons for the game and return a list of all the buttons.
     """
     clear_button = Button(575, 475, 140, 50, 'CLEAR', 'CLEAR')
-    reset_button = Button(750, 475, 140, 50, 'RESET', 'RESET')
+    random_button = Button(750, 475, 140, 50, 'RANDOM', 'RANDOM')
     add_button = Button(575, 375, 140, 50, 'ADD', 'ADD')
     remove_button = Button(750, 375, 140, 50, 'REMOVE', 'REMOVE')
     speed_decr_button = Button(700, 75, 50, 50, '-', '-SPEED')
@@ -98,7 +97,7 @@ def make_and_get_buttons() -> List[Button]:
     mass_decr_button = Button(700, 275, 50, 50, '-', '-MASS')
     mass_incr_button = Button(825, 275, 50, 50, '+', '+MASS')
 
-    return [clear_button, reset_button, add_button, remove_button,
+    return [clear_button, random_button, add_button, remove_button,
     speed_decr_button, speed_incr_button, size_decr_button, size_incr_button,
     mass_decr_button, mass_incr_button]
 
@@ -108,7 +107,7 @@ def clear(manager: ParticleManager) -> None:
     manager.clear()
 
 
-def reset_simulation(manager: ParticleManager, n: int) -> None:
+def random_simulation(manager: ParticleManager, n: int) -> None:
     # Regenerate n random particles to simulate
     manager.clear()
     manager.simulate_n_particles(n)
@@ -175,9 +174,9 @@ def main():
                         print(f"{action} pressed")
                         if action == 'CLEAR':
                             clear(manager)
-                        elif action == 'RESET':
+                        elif action == 'RANDOM':
                             n = random.randint(1, MAX_PARTICLES - 1)
-                            reset_simulation(manager, n)
+                            random_simulation(manager, n)
                         elif action == 'ADD':
                             add_particle(manager, particle_values)
                         elif action == 'REMOVE':
